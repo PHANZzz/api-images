@@ -3,8 +3,8 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
-const fs = require('fs');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 // Replace with your MongoDB connection string
@@ -18,6 +18,10 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
+app.use((req, res, next) => {
+  res.removeHeader('Content-Security-Policy');
+  next();
+});
 
 app.post('/upload', upload.single('image'), async (req, res) => {
   try {
@@ -30,8 +34,8 @@ app.post('/upload', upload.single('image'), async (req, res) => {
     const db = client.db('Stock');
     const usersCollection = db.collection('Users');
 
-    // Read the file from the file system
-    const fileData = fs.readFileSync(req.file.path);
+    // Get the file data from the request
+    const fileData = req.file.buffer;
 
     // Insert the image into the database
     await usersCollection.insertOne({
