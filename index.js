@@ -26,7 +26,7 @@ const imageSchema = new mongoose.Schema({
 // Create a model for the image data
 const Image = mongoose.model('Image', imageSchema);
 
-app.get('/', (req, res) => {
+app.get('/Insert', (req, res) => {
   res.send(`
     <h1>Upload Image</h1>
     <form action="/upload" method="post" enctype="multipart/form-data">
@@ -69,7 +69,7 @@ app.post('/upload', upload.single('image'), async (req, res) => {
     console.log(err);
   }
 });
-app.get('/images', async (req, res) => {
+app.get('/', async (req, res) => {
   try {
     // Specify the database and collection
     const db = mongoose.connection.useDb('Stock');
