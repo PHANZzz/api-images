@@ -26,50 +26,50 @@ const imageSchema = new mongoose.Schema({
 // Create a model for the image data
 const Image = mongoose.model('Image', imageSchema);
 
-app.get('/', (req, res) => {
-  res.send(`
-    <h1>Upload Image</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-      <input type="text" name="name" placeholder="Name">
-      <input type="text" name="desc" placeholder="Description">
-      <input type="file" name="image">
-      <button type="submit">Upload</button>
-    </form>
-  `);
-});
+// app.get('/', (req, res) => {
+//   res.send(`
+//     <h1>Upload Image</h1>
+//     <form action="/upload" method="post" enctype="multipart/form-data">
+//       <input type="text" name="name" placeholder="Name">
+//       <input type="text" name="desc" placeholder="Description">
+//       <input type="file" name="image">
+//       <button type="submit">Upload</button>
+//     </form>
+//   `);
+// });
 
-app.post('/upload', upload.single('image'), async (req, res) => {
-  // Check if a file was uploaded
-  if (!req.file) {
-    res.status(400).send('No file uploaded');
-    return;
-  }
+// app.post('/upload', upload.single('image'), async (req, res) => {
+//   // Check if a file was uploaded
+//   if (!req.file) {
+//     res.status(400).send('No file uploaded');
+//     return;
+//   }
 
-  // Create an object with the image data
-  const obj = {
-    name: req.body.name,
-    desc: req.body.desc,
-    img: {
-      data: fs.readFileSync(path.join(__dirname, 'uploads', req.file.filename)),
-      contentType: 'image/png'
-    }
-  };
+//   // Create an object with the image data
+//   const obj = {
+//     name: req.body.name,
+//     desc: req.body.desc,
+//     img: {
+//       data: fs.readFileSync(path.join(__dirname, 'uploads', req.file.filename)),
+//       contentType: 'image/png'
+//     }
+//   };
 
-  try {
-    // Specify the database and collection
-    const db = mongoose.connection.useDb('Stock');
-    const users = db.collection('Users');
+//   try {
+//     // Specify the database and collection
+//     const db = mongoose.connection.useDb('Stock');
+//     const users = db.collection('Users');
 
-    // Insert the image data into the database
-    await users.insertOne(obj);
+//     // Insert the image data into the database
+//     await users.insertOne(obj);
 
-    // Send a success message to the browser
-    res.send('<p>Image uploaded successfully</p>');
-  } catch (err) {
-    console.log(err);
-  }
-});
-app.get('/images', async (req, res) => {
+//     // Send a success message to the browser
+//     res.send('<p>Image uploaded successfully</p>');
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
+app.get('/', async (req, res) => {
   try {
     // Specify the database and collection
     const db = mongoose.connection.useDb('Stock');
