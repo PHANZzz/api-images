@@ -7,6 +7,14 @@ const path = require('path');
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
+// Set the Content Security Policy header
+app.use((req, res, next) => {
+  res.set({
+    "Content-Security-Policy": "default-src 'self'; font-src 'self' data:; img-src 'self' data:"
+  });
+  next();
+});
+
 // Use the provided uri string
 const uri = "mongodb+srv://sophan:sophan%40123@cluster0.r3agzsk.mongodb.net/?retryWrites=true&w=majority";
 
