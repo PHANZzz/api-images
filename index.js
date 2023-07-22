@@ -1,10 +1,12 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const fs = require('fs');
-const cors = require('cors');
-app.use(cors());
+
+
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 // Replace with your MongoDB connection string
