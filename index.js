@@ -4,6 +4,7 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const cors = require('cors');
+app.use(cors());
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 // Replace with your MongoDB connection string
@@ -18,7 +19,7 @@ const client = new MongoClient(uri, {
   }
 });
 
-app.use(cors());
+
 
 app.post('/upload', upload.single('image'), async (req, res) => {
   try {
