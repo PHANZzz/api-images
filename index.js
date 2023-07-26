@@ -10,7 +10,7 @@ const upload = multer({ dest: 'uploads/' });
 // Set the Content Security Policy header
 app.use((req, res, next) => {
   res.set({
-    "Content-Security-Policy": "default-src 'self'; font-src 'self' data:; img-src 'self' data:; style-src 'self' https://cdn.jsdelivr.net;"
+    "Content-Security-Policy": "default-src 'self'; font-src 'self' data:; img-src 'self' data:; style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline';"
   });
   next();
 });
@@ -35,10 +35,31 @@ const imageSchema = new mongoose.Schema({
 // Create a model for the image data
 const Image = mongoose.model('Image', imageSchema);
 
-app.get('/', (req, res) => {
-  res.send(`
+app.get('/', async (req, res) => {
+  // Specify the database and collection
+  const db = mongoose.connection.useDb('Fruit');
+  const buyers = db.collection('Buyer_Data');
+
+  // Find all documents in the collection
+  const buyerData = await buyers.find().toArray();
+
+  let tableRows = '';
+buyerData.forEach(buyer => {
+  tableRows += `
+    <tr style="color: #0CCA6B; font-family: sans-serif;">
+      <td class="border px-4 py-2">${buyer.phoneNumber}</td>
+      <td class="border px-4 py-2">${buyer.location}</td>
+      <td class="border px-4 py-2">${buyer.transportationType}</td>
+      <td class="border px-4 py-2">${buyer.purchaseDetails}</td>
+      <td class="border px-4 py-2">${buyer.date}</td>
+      <td class="border px-4 py-2">${buyer.time}</td>
+    </tr>
+  `;
+});
+
+res.send(`
     <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
       <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     </head>
     <body class="bg-gray-100">
@@ -50,11 +71,25 @@ app.get('/', (req, res) => {
         <input type="file" name="image" class="my-2">
         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-4">Upload</button>
       </form>
+
+      <h1 class="text-4xl font-bold text-center my-8">Buyer List</h1>
+      <table class="table-auto mx-auto my-8">
+        <thead>
+          <tr>
+            <th class="px-4 py-2">Phone Number</th>
+            <th class="px-4 py-2">Location</th>
+            <th class="px-4 py-2">Transportation Type</th>
+            <th class="px-4 py-2">Purchase Details</th>
+            <th class="px-4 py-2">Date</th>
+            <th class="px-4 py-2">Time</th>
+          </tr>
+        </thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+
     </body>
-    <h1 class="text-4xl font-bold text-center my-8">Buyer List</h1>
   `);
 });
-
 
 app.post('/upload', upload.single('image'), async (req, res) => {
   // Check if a file was uploaded
@@ -83,7 +118,7 @@ app.post('/upload', upload.single('image'), async (req, res) => {
     await users.insertOne(obj);
 
     // Send a success message to the browser
-res.send('<p>Image uploaded successfully. <a href="/">Go back</a></p>');
+    res.send('<p>Image uploaded successfully. <a href="/">Go back</a></p>');
 
   } catch (err) {
     console.log(err);
