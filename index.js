@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
       <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     </head>
     <body class="bg-gray-100">
-      <h1 class="text-4xl font-bold text-center my-8">Upload Image</h1>
+      <h1 class="text-4xl font-bold text-center my-8">Upload Image and Data</h1>
       <form action="/upload" method="post" enctype="multipart/form-data" class="flex flex-col items-center">
         <input type="text" name="name" placeholder="Name" class="border border-gray-300 rounded-md p-2 my-2">
         <input type="number" name="price" placeholder="Price" class="border border-gray-300 rounded-md p-2 my-2">
@@ -51,6 +51,7 @@ app.get('/', (req, res) => {
         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-4">Upload</button>
       </form>
     </body>
+    <h1 class="text-4xl font-bold text-center my-8">Buyer List</h1>
   `);
 });
 
